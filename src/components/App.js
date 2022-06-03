@@ -185,12 +185,12 @@ function App() {
   // Обработчик авторизации
   function onLogin(email, password) {
     auth.authorize(password, email)
-      .then((data) => {
-        if(data) {
+      .then((res) => {
+        if(res) {
           setLoggedIn(true);
           setUserEmailHeader(email);
           history.push('/');
-          localStorage.setItem('jwt', data.token)
+          localStorage.setItem('jwt', res.token)
         }
       })
       .catch(() => {
@@ -200,19 +200,19 @@ function App() {
   }
 
   // Проверка токена
-  // function tokenCheck() {
-  //   const token = localStorage.getItem('jwt');
-  //   if(token) {
-  //     auth.validityToken(token)
-  //     .then((data) => {
-  //       if(data) {
-  //         setUserEmailHeader(data.email)
-  //       };
-  //       setLoggedIn(true);
-  //       history.push('/');
-  //     });
-  //   }
-  // }
+  function tokenCheck() {
+    const token = localStorage.getItem('jwt');
+    if(token) {
+      auth.validityToken(token)
+      .then((res) => {
+        if(res) {
+          setUserEmailHeader(res.email)
+        };
+        setLoggedIn(true);
+        history.push('/');
+      });
+    }
+  }
 
   function onSignOut() {
     localStorage.removeItem('jwt');
@@ -221,9 +221,9 @@ function App() {
   }
 
   //Проверка токена при первой загрузке
-  // useEffect(() => {
-  //   tokenCheck();
-  // }, [])
+  useEffect(() => {
+    tokenCheck();
+  }, [])
 
   useEffect(() => {
     if (loggedIn) {
@@ -261,21 +261,6 @@ function App() {
                 loggedIn={loggedIn}               
               />
 
-              {/* <Route exact path="/">
-                <Main 
-                  onEditAvatar={handleEditAvatarClick} 
-                  onEditProfile={handleEditProfileClick} 
-                  onAddPlace={handleAddPlaceClick}
-                  onCardClick={handleCardClick}
-                  onSetCards={handleSetCads}
-                  onCardLike={handleCardLike}
-                  onCardDelete={handleCardDelete}
-                  cards={cards} 
-                />
-                <Footer />
-              </Route> */}
-
-              
               <Route path="/signin">
                 <Login onLogin={onLogin} />   
               </Route>
