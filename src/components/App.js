@@ -3,7 +3,7 @@ import { useState, useEffect, useContext } from 'react';
 import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import api from '../utils/api';
-import * as auth from '../utils/auth';
+import * as auth from '../utils/auth.js';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
@@ -62,10 +62,7 @@ function App() {
 
   }, []);
   
-  //Проверка токена при первой загрузке
-  useEffect(() => {
-    tokenCheck();
-  })
+  
 
   // Открытие попапа редактирования аватара
   function handleEditAvatarClick() {
@@ -88,7 +85,7 @@ function App() {
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setSelectedCard(null);
-    // setIsInfoTooltipOpen(false);
+    setIsInfoTooltipOpen(false);
   }
 
   // Обработчик клика по изображению
@@ -169,8 +166,9 @@ function App() {
         })
   }
 
+  // Обработчик регистрации
   function onRegister(email, password) {
-    auth.register(email, password)
+    auth.register(password, email)
       .then((res) => {
         setIsInfoTooltipOpen(true)
         if(res) {
@@ -184,14 +182,15 @@ function App() {
       });
   }
 
+  // Обработчик авторизации
   function onLogin(email, password) {
-    auth.authorize(email, password)
-      .then((res) => {
-        if(res) {
+    auth.authorize(password, email)
+      .then((data) => {
+        if(data) {
           setLoggedIn(true);
           setUserEmailHeader(email);
           history.push('/');
-          localStorage.setItem('jwt', res.token)
+          localStorage.setItem('jwt', data.token)
         }
       })
       .catch(() => {
@@ -200,25 +199,37 @@ function App() {
       });
   }
 
-  function tokenCheck() {
-    const token = localStorage.getItem('jwt');
-    if(token) {
-      auth.validityToken(token)
-      .then((res) => {
-        if(res) {
-          setUserEmailHeader(res.data.email)
-        };
-        setLoggedIn(true);
-        history.push('/');
-      });
-    }
-  }
+  // Проверка токена
+  // function tokenCheck() {
+  //   const token = localStorage.getItem('jwt');
+  //   if(token) {
+  //     auth.validityToken(token)
+  //     .then((data) => {
+  //       if(data) {
+  //         setUserEmailHeader(data.email)
+  //       };
+  //       setLoggedIn(true);
+  //       history.push('/');
+  //     });
+  //   }
+  // }
 
   function onSignOut() {
     localStorage.removeItem('jwt');
     history.push('/signin');
     setLoggedIn(false);
   }
+
+  //Проверка токена при первой загрузке
+  // useEffect(() => {
+  //   tokenCheck();
+  // }, [])
+
+  useEffect(() => {
+    if (loggedIn) {
+        history.push("/");
+    }
+  }, [loggedIn]);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -231,9 +242,6 @@ function App() {
             />
             <Switch>
               <ProtectedRoute
-                component={Main}
-                exact path="/"
-                loggedIn={loggedIn} 
                 onEditAvatar={handleEditAvatarClick} 
                 onEditProfile={handleEditProfileClick} 
                 onAddPlace={handleAddPlaceClick}
@@ -242,6 +250,9 @@ function App() {
                 onCardLike={handleCardLike}
                 onCardDelete={handleCardDelete}
                 cards={cards}
+                component={Main}
+                exact path="/"
+                loggedIn={loggedIn} 
               />
               
               <ProtectedRoute
@@ -263,30 +274,27 @@ function App() {
                 />
                 <Footer />
               </Route> */}
-              
-              <Route path="/signup">
-                <Register
-                   />
-                   onRegister={onRegister}
-              </Route>
+
               
               <Route path="/signin">
-                <Login
-                   />
-                   onLogin={onLogin}
+                <Login onLogin={onLogin} />   
               </Route>
               
+              <Route path="/signup">
+                <Register onRegister={onRegister} />   
+              </Route>
+              
+              <Route>
+                {loggedIn ? <Redirect to="/" /> : <Redirect to="/signup" />}
+              </Route>
+
             </Switch> 
-            
-            <Route>
-              {loggedIn ? <Redirect to="/" /> : <Redirect to="/signin" />}
-            </Route>
-            
-            {/* <InfoTooltip>
+
+            <InfoTooltip
               isOpen={isInfoTooltipOpen}
               onClose={closeAllPopups}
               status={message}
-            </InfoTooltip> */}
+            />
 
             <EditProfilePopup 
               isOpen={isEditProfilePopupOpen} 

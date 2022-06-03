@@ -11,7 +11,7 @@ function Header({ userEmailHeader, onSignOut }) {
       <header className="header">
         <img className="header__logo" src={logo} />
         <div className="header__link">
-          <p className="header__auth header__auth_email">hjhj
+          <p className="header__auth header__auth_email">
             {location.pathname ==="/" ? userEmailHeader : ""}
           </p>
           <Link to={
