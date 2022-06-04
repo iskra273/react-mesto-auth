@@ -46,21 +46,24 @@ function App() {
  const history = useHistory();
 
   useEffect(() => {
-    api.getProfile()
+    tokenCheck();
+    if (loggedIn) {
+      api.getProfile()
       .then((data) => {
         setCurrentUser(data)
       })
       .catch((err) => {
         console.error(err);
       })
- 
+    
+    
     api.getInitialCards()
       .then((res) => setCards(res))
       .catch((err) => {
         console.error(err);
       })
-
-  }, []);
+    }
+  }, [loggedIn]);
   
   
 
@@ -158,9 +161,7 @@ function App() {
 
   function handleCardDelete(card) {
     api.deleteCard(card._id)
-        .then(() => {
-            setCards(cards.filter((item) => item._id !== card._id))
-        })
+        .then(setCards(cards.filter((item) => item._id !== card._id)))
         .catch((err) => {
             console.log(err);
         })

@@ -1,10 +1,11 @@
 .login__text {
     width: 358px;
-    height: 17px;
+    height: 112px;
     margin: 0 auto;
-    margin-top: 15px;
-    margin-bottom: 80px;
+    /* margin-top: 15px;
+    margin-bottom: 80px; */
     padding: 0;
+    padding-top: 15px;
     font-family: 'Inter';
     font-style: normal;
     font-weight: 400;
@@ -12,6 +13,4 @@
     line-height: 17px;
     text-align: center;
     color: #fff;
-    
-
 }

@@ -36,7 +36,8 @@ function Login({onLogin}) {
       placeholder="Пароль"
       onChange={handlePasswordChange}
       />
-      <button type = "submit" className="login__button">Войти</button>                 
+      <button type = "submit" className="login__button">Войти</button>
+      <div className="login__text"></div>                 
     </form>  
   )
 }

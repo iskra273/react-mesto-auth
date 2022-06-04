@@ -34,7 +34,6 @@ export const authorize = (password, email) => {
       body: JSON.stringify({password, email})
     })
     .then((res) => {
-      console.log(res);
       return getResponse(res)
     })
   }; 
@@ -48,7 +47,6 @@ export const authorize = (password, email) => {
       }
     })
     .then((res) => {
-      console.log(res);
       return getResponse(res)
     })
   };
