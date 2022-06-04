@@ -13,7 +13,5 @@
     align-items: center;
     border-radius: 10px;
     flex-direction: column;
-    /* visibility: hidden;
-    opacity: 0; */
     transition: opacity  0.5s linear, visibility  0s linear 0.5s;
 }

@@ -189,8 +189,8 @@ function App() {
         if(res) {
           setLoggedIn(true);
           setUserEmailHeader(email);
-          history.push('/');
           localStorage.setItem('jwt', res.token)
+          history.push('/');
         }
       })
       .catch(() => {
@@ -206,11 +206,14 @@ function App() {
       auth.validityToken(token)
       .then((res) => {
         if(res) {
-          setUserEmailHeader(res.email)
+          setUserEmailHeader(res.data.email)
         };
         setLoggedIn(true);
         history.push('/');
-      });
+      })
+      .catch((err) => {
+        console.log(err)
+      });  
     }
   }
 
@@ -227,7 +230,7 @@ function App() {
 
   useEffect(() => {
     if (loggedIn) {
-        history.push("/");
+      history.push("/"); 
     }
   }, [loggedIn]);
 
@@ -252,7 +255,7 @@ function App() {
                 cards={cards}
                 component={Main}
                 exact path="/"
-                loggedIn={loggedIn} 
+                loggedIn={loggedIn}
               />
               
               <ProtectedRoute
@@ -260,7 +263,7 @@ function App() {
                 exact path="/"
                 loggedIn={loggedIn}               
               />
-
+              
               <Route path="/signin">
                 <Login onLogin={onLogin} />   
               </Route>
